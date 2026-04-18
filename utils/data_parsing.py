@@ -3,12 +3,14 @@ import ast
 import pandas as pd
 import uuid
 
-df = pd.read_json("data/companies.jsonl", lines=True)
-
-
-# The database contains a lot of dictionaries and lists
-# To avoid working on these types of data structures, 
-# I transformed everything into a string
+COUNTRY_CODES = {
+    "ro": "romania",
+    "fr": "france",
+    "de": "germany",
+    "ch": "switzerland",
+    "us": "united states",
+    "gb": "united kingdom",
+}
 
 def safe_parse(x):
     if x is None:
@@ -34,11 +36,9 @@ def list_to_text(value):
         return ""
 
     out = []
-
     for v in value:
         if isinstance(v, str):
             out.append(v)
-
         elif isinstance(v, dict):
             for key in ["label", "name", "value"]:
                 if key in v and v[key]:
@@ -46,6 +46,14 @@ def list_to_text(value):
                     break
 
     return " ".join(out)
+
+
+def get_country_name(address_raw) -> str:
+    addr = safe_parse(address_raw)
+    if not addr:
+        return ""
+    code = addr.get("country_code", "").lower()
+    return COUNTRY_CODES.get(code, code)
 
 
 def build_text(row):
@@ -56,7 +64,8 @@ def build_text(row):
 
     addr = safe_parse(row.get("address"))
     if addr:
-        parts.append(addr.get("country_code", ""))
+        code = addr.get("country_code", "").lower()
+        parts.append(COUNTRY_CODES.get(code, code))
         parts.append(addr.get("region_name", ""))
         parts.append(addr.get("town", ""))
 
@@ -73,13 +82,16 @@ def build_text(row):
     return " ".join([p for p in parts if p]).lower().strip()
 
 
+
 def apply_text_normalization(df):
     df = df.copy()
     df["text"] = df.apply(build_text, axis=1)
+    df["country"] = df["address"].apply(get_country_name)
+
     return df
 
 
+df = pd.read_json("data/companies.jsonl", lines=True)
 df = df.drop(columns=["secondary_naics"], errors="ignore")
 df = apply_text_normalization(df)
-
 df["id"] = [str(uuid.uuid4()) for _ in range(len(df))]
