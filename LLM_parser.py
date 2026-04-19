@@ -4,7 +4,7 @@ import os
 import re
 from dotenv import load_dotenv
 from google import genai
-from Prompt import PROMPT
+from utils.prompt import PROMPT
 
 load_dotenv()
 
@@ -48,15 +48,4 @@ class SearchFilters:
             if v is not None and k in cls.__dataclass_fields__
         }
         return cls(**valid_fields)
-
-    def has_hard_filters(self) -> bool:
-        return any([
-            self.country,
-            self.min_employees,
-            self.max_employees,
-            self.min_revenue,
-            self.max_revenue,
-            self.is_public is not None,
-            self.min_year_founded,
-            self.max_year_founded,
-        ])
+    

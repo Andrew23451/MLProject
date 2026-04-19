@@ -2,15 +2,15 @@ import json
 import ast
 import pandas as pd
 import uuid
+from country_codes import COUNTRY_CODES, EUROPE, ASIA, AFRICA, NORTH_AMERICA, SOUTH_AMERICA, AUSTRALIA
 
-COUNTRY_CODES = {
-    "ro": "romania",
-    "fr": "france",
-    "de": "germany",
-    "ch": "switzerland",
-    "us": "united states",
-    "gb": "united kingdom",
-}
+CONTINENT_MAP = {}
+for code in EUROPE: CONTINENT_MAP[code] = "Europe"
+for code in ASIA: CONTINENT_MAP[code] = "Asia"
+for code in AFRICA: CONTINENT_MAP[code] = "Africa"
+for code in SOUTH_AMERICA: CONTINENT_MAP[code] = "South America"
+for code in NORTH_AMERICA: CONTINENT_MAP[code] = "North America"
+for code in AUSTRALIA: CONTINENT_MAP[code] = "Australia"
 
 def safe_parse(x):
     if x is None:
@@ -48,12 +48,15 @@ def list_to_text(value):
     return " ".join(out)
 
 
-def get_country_name(address_raw) -> str:
+def get_location_info(address_raw):
     addr = safe_parse(address_raw)
     if not addr:
-        return ""
-    code = addr.get("country_code", "").lower()
-    return COUNTRY_CODES.get(code, code)
+        return pd.Series(["", "Unknown"])
+    
+    code = addr.get("country_code", "").lower().strip()
+    country_name = COUNTRY_CODES.get(code, code)
+    continent_name = CONTINENT_MAP.get(code, "Unknown")
+    return pd.Series([country_name, continent_name])
 
 
 def build_text(row):
@@ -64,8 +67,9 @@ def build_text(row):
 
     addr = safe_parse(row.get("address"))
     if addr:
-        code = addr.get("country_code", "").lower()
+        code = addr.get("country_code", "").lower().strip()
         parts.append(COUNTRY_CODES.get(code, code))
+        parts.append(CONTINENT_MAP.get(code, ""))
         parts.append(addr.get("region_name", ""))
         parts.append(addr.get("town", ""))
 
@@ -86,12 +90,13 @@ def build_text(row):
 def apply_text_normalization(df):
     df = df.copy()
     df["text"] = df.apply(build_text, axis=1)
-    df["country"] = df["address"].apply(get_country_name)
+    df["country", "continent"] = df["address"].apply(get_location_info)
 
     return df
 
 
 df = pd.read_json("data/companies.jsonl", lines=True)
+
 df = df.drop(columns=["secondary_naics"], errors="ignore")
 df = apply_text_normalization(df)
 df["id"] = [str(uuid.uuid4()) for _ in range(len(df))]
