@@ -102,7 +102,7 @@ NORTH_AMERICA = {
     "ca": "canada"
 }
 
-AUSTRALIA = {
+OCEANIA = {
     "nz": "new zealand",
     "au": "australia"
 }

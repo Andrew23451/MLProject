@@ -5,10 +5,10 @@ def apply_filters(df: pd.DataFrame, f: SearchFilters) -> pd.DataFrame:
     mask = pd.Series(True, index=df.index)
 
     if f.country:
-        mask &= df["text"].str.contains(f.country.lower(), na=False)
+        mask &= df["country"].str.lower() == f.country.lower()
 
     if f.continent:
-        mask &= df["text"].str.contains(f.continent.lower(), na=False)
+        mask &= df["continent"].str.lower() == f.continent.lower()
 
     if f.min_employees is not None:
         mask &= (df["employee_count"] >= f.min_employees) | df["employee_count"].isna()

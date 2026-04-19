@@ -2,7 +2,7 @@ import json
 import ast
 import pandas as pd
 import uuid
-from country_codes import COUNTRY_CODES, EUROPE, ASIA, AFRICA, NORTH_AMERICA, SOUTH_AMERICA, AUSTRALIA
+from .country_codes import COUNTRY_CODES, EUROPE, ASIA, AFRICA, NORTH_AMERICA, SOUTH_AMERICA, OCEANIA
 
 CONTINENT_MAP = {}
 for code in EUROPE: CONTINENT_MAP[code] = "Europe"
@@ -10,7 +10,7 @@ for code in ASIA: CONTINENT_MAP[code] = "Asia"
 for code in AFRICA: CONTINENT_MAP[code] = "Africa"
 for code in SOUTH_AMERICA: CONTINENT_MAP[code] = "South America"
 for code in NORTH_AMERICA: CONTINENT_MAP[code] = "North America"
-for code in AUSTRALIA: CONTINENT_MAP[code] = "Australia"
+for code in OCEANIA: CONTINENT_MAP[code] = "Oceania"
 
 def safe_parse(x):
     if x is None:
@@ -90,7 +90,7 @@ def build_text(row):
 def apply_text_normalization(df):
     df = df.copy()
     df["text"] = df.apply(build_text, axis=1)
-    df["country", "continent"] = df["address"].apply(get_location_info)
+    df[["country", "continent"]] = df["address"].apply(get_location_info)
 
     return df
 
