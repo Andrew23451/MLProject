@@ -12,6 +12,9 @@ else:
 
 def search(query: str):
     filters = SearchFilters.from_llm(query)
+    print(f"Country: {filters.country}")
+    print(f"Complexity: {filters.complexity}")
+    print(f"Is public: {filters.is_public}")
     if filters.complexity == "semantic":
         candidates = emb.search(filters.semantic_query, df, all_embeddings, "semantic")
 
