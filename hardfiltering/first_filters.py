@@ -1,4 +1,4 @@
-from utils.LLM_parser import SearchFilters
+from hardfiltering.LLM_parser import SearchFilters
 import pandas as pd
 
 def apply_filters(df: pd.DataFrame, f: SearchFilters) -> pd.DataFrame:

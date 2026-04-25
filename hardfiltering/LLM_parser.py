@@ -57,7 +57,4 @@ class SearchFilters:
                 if attempt < 3:
                     time.sleep(2 * attempt)
 
-        return cls() # all fields are None, but I hope the embeddings will still work         
-    
-
-# TODO: If the LLM is full of requests/is not working, I should handle the situation
+        return cls() # all fields are None, but I hope the embeddings will still work
