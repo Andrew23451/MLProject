@@ -54,6 +54,7 @@ class SearchFilters:
                 return cls(**valid_fields)
             except Exception as e:
                 last_error = e
+                print(f"Attempt {attempt}/3 failed: {e}")
                 if attempt < 3:
                     time.sleep(2 * attempt)
 

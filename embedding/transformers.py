@@ -40,12 +40,34 @@ def extract_industry(row) -> str:
         return naics.get("label", "")
     return ""
 
+def extract_business(row) -> str:
+    business = row.get("business_model") or []
+    if isinstance(business, str):
+        business = safe_parse(business) or []
+
+    targets = row.get("target_markets") or []
+    if isinstance(targets, str):
+        targets = safe_parse(targets) or []
+
+    parts = []
+    for v in business + targets:
+        if isinstance(v, str):
+            parts.append(v)
+        elif isinstance(v, dict):
+            for key in ["label", "name", "value"]:
+                if key in v and v[key]:
+                    parts.append(str(v[key]))
+                    break
+    return " ".join(parts).strip()
+    
+
 def build_and_save(df: pd.DataFrame):
     os.makedirs("data", exist_ok=True)
     fields = {
         "description": df.apply(extract_description, axis=1).tolist(),
         "offerings": df.apply(extract_offerings, axis=1).tolist(),
-        "industry": df.apply(extract_industry, axis=1).tolist()
+        "industry": df.apply(extract_industry, axis=1).tolist(),
+        "business": df.apply(extract_business, axis=1).tolist()
     }
 
     for field_name, texts in fields.items():
