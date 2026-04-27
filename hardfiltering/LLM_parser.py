@@ -3,7 +3,7 @@ import json
 import os
 import time
 from dotenv import load_dotenv
-from google import genai
+from openai import OpenAI
 from utils.prompt import PROMPT
 
 load_dotenv()
@@ -28,17 +28,23 @@ class SearchFilters:
 
     @classmethod
     def from_llm(cls, query: str) -> "SearchFilters":
-        client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
-
-        last_error = None
+        client = OpenAI(
+            base_url="https://openrouter.ai/api/v1",
+            api_key=os.getenv("OPENROUTER_API_KEY"),
+        )
+        
+        
         for attempt in range(1, 4):
             try:
-                response = client.models.generate_content(
-                    model="gemini-3-flash-preview",
-                    contents=PROMPT + f"\n\nUser query: {query}"
+                response = client.chat.completions.create(
+                    model="openai/gpt-4o-mini",
+                    messages=[
+                        {"role": "system", "content": PROMPT},
+                        {"role": "user", "content": f"User query: {query}"}
+                    ],
+                    temperature=0
                 )
-
-                text = response.text
+                text = response.choices[0].message.content
                 if "```" in text:
                     text = text.split("```")[1]
                     if text.startswith("json"):
@@ -53,8 +59,7 @@ class SearchFilters:
                 }
                 return cls(**valid_fields)
             except Exception as e:
-                last_error = e
-                print(f"Attempt {attempt}/3 failed: {e}")
+                print(e)
                 if attempt < 3:
                     time.sleep(2 * attempt)
 

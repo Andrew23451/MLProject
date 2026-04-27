@@ -3,8 +3,17 @@ from utils.data_parsing import safe_parse
 from utils.weights import WEIGHTS
 from utils.paths import PATHS
 import numpy as np
+import torch
 import os
 import pandas as pd
+from dotenv import load_dotenv
+
+torch.manual_seed(42)
+np.random.seed(42)
+torch.use_deterministic_algorithms(False)
+os.environ['TRANSFORMERS_OFFLINE'] = '1'
+
+load_dotenv()
 
 
 MODEL_NAME = "all-MiniLM-L6-v2"
@@ -76,7 +85,7 @@ def build_and_save(df: pd.DataFrame):
             normalize_embeddings=True,
             show_progress_bar=True,
             batch_size=64
-        )
+        ).astype(np.float32)
         np.save(PATHS[field_name], embeddings)
 
 

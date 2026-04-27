@@ -9,11 +9,9 @@ WORKDIR /app
 COPY ./requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy rest of code
-COPY ./ ./
+RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('all-MiniLM-L6-v2')"
 
-# Build embeddings once during the image build and never again at runtime
-RUN python -c "from utils.data_parsing import df; import embedding.transformers as emb; emb.build_and_save(df)"
+ENV TRANSFORMERS_OFFLINE=1
 
 # Make sure to run the programm
 CMD ["python", "solution.py"]

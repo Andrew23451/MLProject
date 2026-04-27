@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  ai-project:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ai_project_container
+    volumes: 
+      - .:/app
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1
+      - TRANSFORMERS_OFFLINE=1
+    
+    command: python solution.py
