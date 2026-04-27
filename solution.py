@@ -37,7 +37,7 @@ def search(query: str):
 
 if __name__ == "__main__":
     queries = [
-        "Pharmaceutical companies in Switzerland"
+        "A company from Asia that has founded after 2018"
     ]
 
     for q in queries:
