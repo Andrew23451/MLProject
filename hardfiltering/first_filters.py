@@ -2,10 +2,12 @@ from hardfiltering.LLM_parser import SearchFilters
 from utils.country_codes import REGION_MAP
 import pandas as pd
 
-def apply_filters(df: pd.DataFrame, f: SearchFilters) -> pd.DataFrame:
+def apply_filters(df: pd.DataFrame, f: SearchFilters, region_countries: list = None) -> pd.DataFrame:
     mask = pd.Series(True, index=df.index)
 
-    if f.country:
+    if region_countries:
+        mask &= df["country"].str.lower().isin(c.lower() for c in region_countries)
+    elif f.country:
         mask &= df["country"].str.lower() == f.country.lower()
 
     if f.continent:

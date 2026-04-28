@@ -2,14 +2,14 @@ import numpy as np
 import pandas as pd
 
 def dynamic_threshold(candidates: pd.DataFrame, min_results: int = 3) -> pd.DataFrame:
-    if "emb_score" not in candidates or len(candidates) < 2:
+    if "emb_score" not in candidates.columns or len(candidates) < 2:
         return candidates
 
     scores = candidates["emb_score"].values
     diffs = np.diff(scores)
 
     avg_drop = np.abs(diffs).mean()
-    cliff_threshold = 2.0 * avg_drop
+    cliff_threshold = max(2.0 * avg_drop, 0.05) # The minimum should be around 0.10
 
     cliff_index = None
     for i, diff in enumerate(diffs):
