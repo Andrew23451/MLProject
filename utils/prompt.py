@@ -4,7 +4,7 @@ PROMPT = """
 
     Return ONLY valid JSON, nothing else:
     {
-      "country": <string or null>,
+      "country": <list of strings or null>,
       "continent": <string or null>,
       "min_employees": <int or null>,
       "max_employees": <int or null>,
@@ -21,12 +21,14 @@ PROMPT = """
     You should think it like this, I'll give you some examples:
       - Use null for anything not mentioned in the query
       - "in/from Romania", country: Romania
-      - "in/from Europe", continent: Europe
+      - "in/from Europe", continent: Europe (the continents are: Europe, Asia, Africa, South/North America, Australia, anything else
+      that seems similar it is maybe a region) 
       - "over $50 million revenue", the min_revenue = 50000000.0, max_revenue = null
       - "with more than 1000 employees", the min_employees = 1000, max_employees = null
       - "public company", the is_public should be set to true
       - "a company founded before 2019", max_year_founded = 2019, min_year_founded = null
-      - complexity = structured, only hard filters needed (example: "A public company from Switzerland")
+      - complexity = structured, only hard filters needed (example: "A public company from Switzerland", "Companies from Europe"), but
+      pay attention at geographic regions, these are NOT countries or continents, so the complexity most likely will NOT be structured
       - complexity = semantic, needs reasoning(supply chain, ecosystem, roles) (example: "Companies that supply packaging for cosmetics")
       - complexity = hybrid, both of the above (examples: "Logistic companies from Romania", "B2B SaaS HR companies in Europe")
       - semantic_query should describe what the ideal matching company looks like

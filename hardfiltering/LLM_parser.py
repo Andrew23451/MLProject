@@ -16,6 +16,7 @@ load_dotenv()
 class SearchFilters:
     country: str | None = None
     continent: str | None = None
+    region: str | None = None
     min_employees: int | None = None
     max_employees: int | None = None
     min_revenue: float | None = None

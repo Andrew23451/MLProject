@@ -1,4 +1,5 @@
 from hardfiltering.LLM_parser import SearchFilters
+from utils.country_codes import REGION_MAP
 import pandas as pd
 
 def apply_filters(df: pd.DataFrame, f: SearchFilters) -> pd.DataFrame:
@@ -9,6 +10,11 @@ def apply_filters(df: pd.DataFrame, f: SearchFilters) -> pd.DataFrame:
 
     if f.continent:
         mask &= df["continent"].str.lower() == f.continent.lower()
+
+    if f.region:
+        region_countries = REGION_MAP.get(f.region, [])
+        if region_countries:
+            mask &= df["country"].str.lower().isin(region_countries)
 
     if f.min_employees is not None:
         mask &= (df["employee_count"] >= f.min_employees)

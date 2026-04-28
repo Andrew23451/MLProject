@@ -18,7 +18,6 @@ all:
 	$(COMPOSE) up --build
 
 # Clean everything
-
 clean:
 	$(COMPOSE) down --rmi all --volumes
 

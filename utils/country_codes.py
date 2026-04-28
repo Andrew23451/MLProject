@@ -106,3 +106,24 @@ OCEANIA = {
     "nz": "new zealand",
     "au": "australia"
 }
+
+REGION_MAP = {
+    "scandinavia": ["norway", "sweden", "denmark"],
+    "nordic": ["norway", "sweden", "denmark", "finland", "iceland"],
+    "eastern europe": ["romania", "poland", "ukraine", "croatica", "greece"],
+    "western europe": ["france", "germany", "switzerland", "united kingdom",
+                       "netherlands", "ireland", "belgium", "luxembourg", "austria"],
+    "northern europe": ["norway", "sweden", "finland", "denmark", "iceland"],
+    "southern europe": ["spain", "portugal", "italy", "greece"],
+    "middle east": ["kuwait", "turkey", "egypt"],
+    "southeast asia": ["singapore", "vietnam", "indonesia"],
+    "dach": ["germany", "austria", "switzerland"],
+    "benelux": ["netherlands", "belgium", "luxembourg"],
+    "baltics": ["lithuania"],
+    "balkans": ["croatia", "greece", "romania"],
+    "apac": ["singapore", "india", "south korea", "china", "japan",
+            "australia", "new zealand", "taiwan"],
+    "latin america": ["chile", "argentina", "brazil"],
+    "pacific": ["australia", "new zealand", "singapore"],
+}
+

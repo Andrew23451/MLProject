@@ -1,6 +1,7 @@
 from utils.data_parsing import df
 from hardfiltering.LLM_parser import SearchFilters
 from hardfiltering.first_filters import apply_filters
+from utils.region_countries import resolve_region
 import embedding.transformers as emb
 import time
 
@@ -13,12 +14,17 @@ else:
 
 def search(query: str):
     filters = SearchFilters.from_llm(query)
+    region_name, _ = resolve_region(query)
+    if region_name:
+        filters.region = region_name
+    
     print(f"Complexity: {filters.complexity}")
     print(f"Country: {filters.country}")
     print(f"Continent: {filters.continent}")
 
     if filters.complexity == "semantic":
-        candidates = emb.search(filters.semantic_query, df, all_embeddings, "semantic")
+        survivors = apply_filters(df, filters) # Putting it here just if the LLM doesn't respond correctly
+        candidates = emb.search(filters.semantic_query, survivors, all_embeddings, "semantic")
 
     elif filters.complexity == "structured":
         candidates = apply_filters(df, filters)
@@ -37,7 +43,7 @@ def search(query: str):
 
 if __name__ == "__main__":
     queries = [
-        "A company from Asia that has founded after 2018"
+        "A public company from Scandinavia"
     ]
 
     for q in queries:
