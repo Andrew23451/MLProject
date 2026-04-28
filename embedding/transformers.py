@@ -2,6 +2,7 @@ from sentence_transformers import SentenceTransformer
 from utils.data_parsing import safe_parse
 from utils.weights import WEIGHTS
 from utils.paths import PATHS
+from utils.weights import adjust_weights_dinamically
 import numpy as np
 import torch
 import os
@@ -111,14 +112,22 @@ def search(
 
     top_k = min(top_k, len(db))
     query_emb = model.encode([semantic_query], normalize_embeddings=True)
-    weights = WEIGHTS.get(complexity, WEIGHTS["hybrid"])
+    base_weights = WEIGHTS.get(complexity, WEIGHTS["hybrid"])
     idx = db.index
-    final_scores = np.zeros(len(db))
-
-    for field_name, weight in weights.items():
+    individual_scores = {}
+    for field_name in base_weights.keys():
         field_embeddings = all_embeddings[field_name][idx]
-        field_scores = (field_embeddings @ query_emb.T).flatten()
-        final_scores += weight * field_scores
+        individual_scores[field_name] = (field_embeddings @ query_emb.T).flatten()
+    
+    final_scores = []
+    for i in range(len(db)):
+        row = db.iloc[i]
+        row_field_scores = {field: individual_scores[field][i] for field in base_weights.keys()}
+        dynamic_w = adjust_weights_dinamically(row, semantic_query, base_weights)
+        score = sum(row_field_scores[f] * dynamic_w.get(f, 0) for f in base_weights.keys())
+        final_scores.append(score)
+
+    final_scores = np.array(final_scores)
     
     top_indices = np.argsort(final_scores)[::-1][:top_k]
     result = db.iloc[top_indices].copy()

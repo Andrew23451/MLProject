@@ -5,7 +5,7 @@ from hardfiltering.first_filters import apply_filters
 from utils.region_countries import resolve_region
 from utils.dynamic_threshold import dynamic_threshold
 from tests.evaluate import evaluate_system
-from tests.set import GOLDEN_SET
+from tests.set import SET
 import embedding.transformers as emb
 
 if emb.embeddings_exist():
@@ -18,7 +18,7 @@ class SearchEngine:
     def search(self, query: str):
         res_df = search(query)
         if not res_df.empty:
-            # Transformăm fiecare rând într-un obiect care are atributul .name
+            # Transform each row in an object with the attribute .name 
             return [
                 SimpleNamespace(name=row['operational_name']) 
                 for _, row in res_df.iterrows()
@@ -54,7 +54,7 @@ def search(query: str):
 
 if __name__ == "__main__":
     engine = SearchEngine()
-    report = evaluate_system(engine, GOLDEN_SET)
+    report = evaluate_system(engine, SET)
     
     for item in report:
         print(f"Query: {item['query']} | Hit Rate: {item['hit_rate']}")

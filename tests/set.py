@@ -1,4 +1,4 @@
-GOLDEN_SET = {
+SET = {
     "A public company from Romania": [
         "Romgaz"
     ],
