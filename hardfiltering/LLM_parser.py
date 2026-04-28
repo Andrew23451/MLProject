@@ -38,12 +38,12 @@ class SearchFilters:
         for attempt in range(1, 4):
             try:
                 response = client.chat.completions.create(
-                    model="openai/gpt-4o-mini",
+                    model="openai/gpt-4o-mini", # Put your best model here
                     messages=[
                         {"role": "system", "content": PROMPT},
                         {"role": "user", "content": f"User query: {query}"}
                     ],
-                    temperature=0
+                    temperature=0 # This can be modified, depending on the AI Model used (between 0 and 2)
                 )
                 text = response.choices[0].message.content
                 if "```" in text:

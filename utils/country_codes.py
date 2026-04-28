@@ -124,6 +124,6 @@ REGION_MAP = {
     "apac": ["singapore", "india", "south korea", "china", "japan",
             "australia", "new zealand", "taiwan"],
     "latin america": ["chile", "argentina", "brazil"],
-    "pacific": ["australia", "new zealand", "singapore"],
+    "pacific": ["australia", "new zealand"]
 }
 

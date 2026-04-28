@@ -4,7 +4,7 @@ PROMPT = """
 
     Return ONLY valid JSON, nothing else:
     {
-      "country": <list of strings or null>,
+      "country": <string or null>,
       "continent": <string or null>,
       "min_employees": <int or null>,
       "max_employees": <int or null>,
@@ -42,6 +42,5 @@ PROMPT = """
         They are packaging suppliers, NOT cosmetics companies."
       Be careful, if there might appear the keywords "year", "revenue", but no numerical values assigned to them,
       return null for that field. For example, "good revenue". And also pay attention, if there is a country, you will only 
-      complete the "country" field if it is in that country ("in Romania"), not "near Romania" or "not in Romania". Available also
-      for continents.
+      complete the "country" field if it is in that country ("in/from Romania"), not "near Romania" or "not in Romania". Available also for continents.
     """
