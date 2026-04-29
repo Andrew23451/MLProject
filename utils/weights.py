@@ -28,7 +28,7 @@ def adjust_weights_dinamically(row, query, base_weights):
 
     return {f: w / total for f, w in adjusted.items()}
 
-# TODO: Adjust this function
+# TODO: Adjust this functionc
 
 WEIGHTS = {
     "semantic": {

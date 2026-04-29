@@ -15,3 +15,9 @@ def evaluate_system(engine, golden_set):
         })
         
     return report
+
+# Use this function to see the percentage of the common companies between a set of tests and the actual output
+# The tests consist of some companies that corresponds to the user query, that were selected manually,
+# but there are not all of them, so the hit rate will not be 100% (the average will be between 30% and 70%). I used this to see
+# where I am situated and the percentages allowed me to make the scores dynamically in order to match he query to the company as
+# much as possible. 

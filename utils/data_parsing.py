@@ -59,6 +59,7 @@ def get_location_info(address_raw):
     return pd.Series([country_name, continent_name])
 
 
+
 def build_text(row):
     parts = []
 

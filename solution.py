@@ -14,16 +14,6 @@ else:
     emb.build_and_save(df)
     all_embeddings = emb.load_all()
 
-class SearchEngine:
-    def search(self, query: str):
-        res_df = search(query)
-        if not res_df.empty:
-            # Transform each row in an object with the attribute .name 
-            return [
-                SimpleNamespace(name=row['operational_name']) 
-                for _, row in res_df.iterrows()
-            ]
-        return []
 
 def search(query: str):
     filters = SearchFilters.from_llm(query)
@@ -38,25 +28,24 @@ def search(query: str):
     elif filters.complexity == "structured":
         candidates = apply_filters(df, filters, countries)
 
-    else:  # hybrid
+    else: # hybrid
         survivors = apply_filters(df, filters, countries)
         candidates = emb.search(filters.semantic_query, survivors, all_embeddings, "hybrid")
 
     if "emb_score" in candidates.columns:
         candidates = candidates[candidates["emb_score"] >= 0.30] # This is a pretty good target
         candidates = dynamic_threshold(candidates, min_results=3)
-        print(candidates[["operational_name", "country", "emb_score"]].to_string())
+        print(candidates[["operational_name", "country", "description", "target_markets"]].to_string())
     else:
-        print(candidates[["operational_name", "country"]])
+        print(candidates[["operational_name", "country", "description", "target_markets"]].to_string())
 
-    return candidates.head(10)
+    return candidates.head(10) # Top 10 results
 
 
 if __name__ == "__main__":
-    engine = SearchEngine()
-    report = evaluate_system(engine, SET)
+    queries = [
+        "A public company from Germany"
+    ]
+    for q in queries:
+        search(q)
     
-    for item in report:
-        print(f"Query: {item['query']} | Hit Rate: {item['hit_rate']}")
-        if item['missing']:
-            print(f"Missing: {item['missing']}")
