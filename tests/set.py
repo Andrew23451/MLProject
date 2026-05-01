@@ -80,5 +80,16 @@ SET = {
         "Dongdao New Energy",
         "E-Lyte",
         "Sepion Technologies"
+    },
+
+    "E-commerce companies using Shopify or similar platforms": {
+        "Walmart",
+        "The Home Depot",
+        "Decathlon",
+        "Forever 21",
+        "Lululemon",
+        "Coles",
+        "Hy-vee",
+        "Harbor Freight"
     }
 }

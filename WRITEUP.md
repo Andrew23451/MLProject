@@ -41,7 +41,7 @@ The `complexity` field is critical, because it dictates the operational mode of 
 * **semantic** - applied when the query requires reasoning and context
 * **hybrid** - both of the above are involved
 
-This first filter really depends on the AI model that is used, because a newer one will make much more accurate extractions, significantly reducing the "false negative" rate where valid companies are accidentally filtered out.
+This first filter really depends on the AI model that is used, because a newer one will make much more accurate extractions, significantly reducing the "false negative" rate where valid companies are accidentally filtered out. So, in order to maximize the efficiency, please create an account at [OpenRouter](https://openrouter.ai/models) and choose the best model that can be afforded. Modify the file "LLM_parser.py" and put that model in the function "from_llm". Also create a `.env` file and put your API Key named `OPENROUTER_API_KEY`. You will find an example in the final project. 
 
 
 ### Layer 2 - Hard Filtering
@@ -94,6 +94,16 @@ After ranking, a cliff detection algorithm removes candidates whose scores fall 
 
 ## Known Limitations and Tradeoffs 
 
+### Optimization
+
+In building this engine, I prioritized **Robustness**, **Accuracy** and also **Simplicity**, as it doesn't use some complex databases for calculations. 
+
+* **Robustness** - The `safe_parse` and `list_to_text` functions ensure that even if the raw data is malformed or has missing fields, the pipeline continues without errors. Also, by moving the region logic out of the LLM and into a Python `REGION_MAP`, I eliminated a risk. The system doesn't "guess" where Scandinavia is, but makes sure that it knows exactly which countries to look for every single time. 
+
+* **Accuracy** - a search engine is useless if it misses the right company or shows a wrong one. I separated the **intent extraction** from the **data retrieval**. The LLM doesn't search the database; It just takes a user query and converts it to a JSON object. This ensures that the downstream logic receives structured instructions. The embedding model also uses the `build_text` function to create a better "profile" for each company (merging location, industry and description).
+
+### Limitations
+
 ### Negation is not supported
 
 The hard filter cannot express negative conditions. A query such as `companies not in Romania` or `companies outside Europe` will not exclude the specific region. The LLM parser is instructed to ignore negative conditions and the `semantic_query` may describe the exclusion, but the embedding model has limited ability to penalize based on the condition. 
@@ -108,7 +118,7 @@ The AI model that is used cannot always return identical outputs for the same qu
 
 ### Database size
 
-The database contains 477 companies. This is a small dataset and the embedding doesn't benefit from approximate nearest-neighbor indexing that would be required at scale. The current numpy dot-product approach is appropriate for this size but would not scale to tens of thousands of records without architectural changes. 
+The database contains 477 companies. This is a small dataset and the embedding doesn't benefit from approximate nearest-neighbor indexing that would be required at scale. The current numpy dot-product approach is appropriate for this size but would not scale to tens of thousands of records without architectural changes.
 
 
 ### Scaling
@@ -116,7 +126,19 @@ The database contains 477 companies. This is a small dataset and the embedding d
 The current system uses a **Linear Search** (brute-force) approach. While perfect fpor 477 companies, it would bcome too slow
 as the dataset grows. To handle 10.000 companies per query, the system should be more focused on finding the best candidates quickly. First step, I would move from storing the embeddings in a simple numpy array to a dedicated `vector database` like **Pinecone** to use the ANN (Approximate Nearest Neighbour). The second step, I will use **FAISS** to speed up the math and efficiently search in dense vectors. 
 
+## How to run the project
 
+This project uses Docker and docker-compose files to simplify the setup and ensure consistency between different users. To further simplify the installation process, use the provided Makefile as follow:
+
+* **make build** - install all the dependencies for the project
+* **make up** - run the implementation
+* **make down** - stop the running and clean the RAM
+
+**Disclaimer**: In the Makefile, everything is runned with root privilleges. If the user is part of the Docker group, the `sudo` can be removed. 
+
+## Testing and validation
+
+I included a set of initial tests to verify the core logic of the system. While these are not exhaustive, they were essential during the development for validation (ensuring that the functions `safe_parse` and `build_text` handle different data types correctly), accuracy (the embedding scores were made dinamically afterwards, not simple, hardcoded ones and i also modified the threshold for the embedding score so that the output is as near as possible to be considered a good result). 
 
 
 
