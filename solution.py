@@ -44,7 +44,7 @@ def search(query: str):
 
 if __name__ == "__main__":
     queries = [
-        "A public company from Germany"
+        # Put the queries here
     ]
     for q in queries:
         search(q)

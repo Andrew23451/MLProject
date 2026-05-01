@@ -114,7 +114,7 @@ The database has significant null rates in numeric columns. Queries that specify
 
 ### LLM parser consistency
 
-The AI model that is used cannot always return identical outputs for the same query. The complexity label in particular can vary between `hybrid` and `semantic` across runs. This introduces non-determinism into the routing logic, which in turn affects which layers run and therefore which companies are returned. Prompt tells explicitly to be really careful, but this doesn't eliminate the probability.
+The AI model that is used cannot always return identical outputs for the same query. The complexity label in particular can vary between `hybrid` and `semantic` across runs. This introduces non-determinism into the routing logic, which in turn affects which layers run and therefore which companies are returned. Prompt tells explicitly to be really careful, but this doesn't eliminate the probability. For example, if the user query is `Innovative logistics startups in Central Europe`, the parser might categorize this differently across two separate runs: `semantic` when the focus is on `innovative logistics` and `hybrid` when the focus is on both the region and the category of business. 
 
 ### Database size
 
@@ -128,6 +128,7 @@ as the dataset grows. To handle 10.000 companies per query, the system should be
 
 ## How to run the project
 
+In order to run the project, in the `solution.py` file, you can add different types of queries. 
 This project uses Docker and docker-compose files to simplify the setup and ensure consistency between different users. To further simplify the installation process, use the provided Makefile as follow:
 
 * **make build** - install all the dependencies for the project
