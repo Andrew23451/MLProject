@@ -100,4 +100,3 @@ df = pd.read_json("data/companies.jsonl", lines=True)
 
 df = df.drop(columns=["secondary_naics"], errors="ignore")
 df = apply_text_normalization(df)
-df["id"] = [str(uuid.uuid4()) for _ in range(len(df))]

@@ -17,7 +17,7 @@ else:
 
 def search(query: str):
     filters = SearchFilters.from_llm(query)
-    region_name, countries = resolve_region(query)
+    _, countries = resolve_region(query)
     if countries:
         filters.country = countries
 

@@ -1,7 +1,7 @@
-def evaluate_system(engine, golden_set):
+def evaluate_system(engine, set):
     report = []
     
-    for query, expected_companies in golden_set.items():
+    for query, expected_companies in set.items():
         results = engine.search(query)
         retrieved_names = [res.name for res in results]
         
